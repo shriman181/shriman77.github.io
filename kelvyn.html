@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kelvyn — Franchise Intelligence Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111418;
+    --surface2: #181c22;
+    --border: rgba(255,255,255,0.07);
+    --accent: #e8ff47;
+    --accent2: #47ffe8;
+    --text: #f0f2f5;
+    --muted: #6b7585;
+    --muted2: #9aa3b0;
+    --red: #ff4747;
+    --orange: #ff9447;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    border-bottom: 1px solid transparent;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(0px);
+  }
+  nav.scrolled {
+    background: rgba(10,12,15,0.92);
+    border-bottom-color: var(--border);
+    backdrop-filter: blur(20px);
+  }
+  .nav-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted2); font-size: 14px; text-decoration: none;
+    font-weight: 500; letter-spacing: 0.3px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-cta {
+    background: var(--accent); color: #0a0c0f;
+    padding: 10px 24px; border-radius: 6px;
+    font-size: 13px; font-weight: 600; text-decoration: none;
+    letter-spacing: 0.3px; transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 120px 48px 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(232,255,71,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232,255,71,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 40%, black 30%, transparent 100%);
+  }
+  .hero-orb {
+    position: absolute; top: -200px; right: -200px;
+    width: 700px; height: 700px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,255,71,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-orb2 {
+    position: absolute; bottom: -300px; left: -100px;
+    width: 600px; height: 600px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(71,255,232,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(232,255,71,0.08); border: 1px solid rgba(232,255,71,0.15);
+    padding: 6px 14px; border-radius: 100px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 32px; width: fit-content;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(48px, 6vw, 88px);
+    line-height: 1.0;
+    letter-spacing: -2px;
+    max-width: 900px;
+    margin-bottom: 28px;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+
+  .hero-sub {
+    font-size: 18px; color: var(--muted2); max-width: 560px;
+    line-height: 1.7; margin-bottom: 48px; font-weight: 300;
+  }
+
+  .hero-actions { display: flex; gap: 16px; align-items: center; }
+  .btn-primary {
+    background: var(--accent); color: #0a0c0f;
+    padding: 14px 32px; border-radius: 8px;
+    font-size: 15px; font-weight: 600; text-decoration: none;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); opacity: 0.9; }
+  .btn-ghost {
+    color: var(--muted2); font-size: 15px; text-decoration: none;
+    font-weight: 500; display: flex; align-items: center; gap: 8px;
+    transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--text); }
+  .btn-ghost .arrow { transition: transform 0.2s; }
+  .btn-ghost:hover .arrow { transform: translateX(4px); }
+
+  .hero-stats {
+    display: flex; gap: 48px; margin-top: 80px;
+    padding-top: 48px; border-top: 1px solid var(--border);
+  }
+  .stat-item {}
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px; color: var(--text); letter-spacing: -1px;
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* ── TICKER ── */
+  .ticker-wrap {
+    overflow: hidden; border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0; background: var(--surface);
+  }
+  .ticker {
+    display: flex; gap: 60px; width: max-content;
+    animation: ticker 25s linear infinite;
+  }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .ticker-item {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    color: var(--muted); letter-spacing: 1px; text-transform: uppercase;
+    white-space: nowrap; display: flex; align-items: center; gap: 20px;
+  }
+  .ticker-dot { color: var(--accent); }
+
+  /* ── SECTIONS ── */
+  section { padding: 100px 48px; }
+
+  .section-eyebrow {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--accent); letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    line-height: 1.1; letter-spacing: -1.5px;
+    margin-bottom: 20px;
+  }
+  h2 em { font-style: italic; color: var(--accent); }
+  .section-sub {
+    font-size: 17px; color: var(--muted2); max-width: 520px;
+    line-height: 1.7; font-weight: 300;
+  }
+
+  /* ── PROBLEM ── */
+  #problem { background: var(--surface); }
+  .problem-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center; margin-top: 64px;
+  }
+  .problem-cards { display: flex; flex-direction: column; gap: 16px; }
+  .problem-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px 28px;
+    display: flex; gap: 20px; align-items: flex-start;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .problem-card:hover { border-color: rgba(255,71,71,0.3); transform: translateX(4px); }
+  .problem-icon {
+    width: 40px; height: 40px; border-radius: 8px;
+    background: rgba(255,71,71,0.1); border: 1px solid rgba(255,71,71,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .problem-card h4 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .problem-card p { font-size: 14px; color: var(--muted2); line-height: 1.6; }
+
+  .problem-right {}
+  .problem-quote {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; line-height: 1.4; color: var(--text);
+    letter-spacing: -0.5px; margin-bottom: 24px;
+  }
+  .problem-quote em { color: var(--red); font-style: italic; }
+  .problem-context { font-size: 15px; color: var(--muted2); line-height: 1.7; }
+  .problem-context strong { color: var(--text); }
+
+  /* ── PRODUCT ── */
+  #product {}
+  .product-header { max-width: 680px; margin-bottom: 64px; }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 2px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+  }
+  .feature-card {
+    background: var(--surface); padding: 40px;
+    transition: background 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .feature-card:hover { background: var(--surface2); }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .feature-card:hover::before { opacity: 1; }
+  .feature-num {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--muted); letter-spacing: 2px; margin-bottom: 20px;
+  }
+  .feature-icon-wrap {
+    width: 48px; height: 48px; border-radius: 10px;
+    background: rgba(232,255,71,0.08); border: 1px solid rgba(232,255,71,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 20px;
+  }
+  .feature-card h3 {
+    font-size: 20px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.3px;
+  }
+  .feature-card p { font-size: 14px; color: var(--muted2); line-height: 1.7; }
+  .feature-tags {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px;
+  }
+  .tag {
+    background: rgba(232,255,71,0.06); border: 1px solid rgba(232,255,71,0.1);
+    color: var(--accent); font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.8px; padding: 4px 10px; border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  /* ── HOW IT WORKS ── */
+  #how { background: var(--surface); }
+  .how-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: start; margin-top: 64px;
+  }
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex; gap: 24px; padding: 32px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .step:last-child { border-bottom: none; }
+  .step.active .step-num { background: var(--accent); color: #0a0c0f; }
+  .step.active .step-title { color: var(--accent); }
+  .step-num {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted);
+    flex-shrink: 0; transition: all 0.3s;
+  }
+  .step-content {}
+  .step-title { font-size: 17px; font-weight: 600; margin-bottom: 8px; transition: color 0.3s; }
+  .step-desc { font-size: 14px; color: var(--muted2); line-height: 1.7; }
+
+  .how-visual {
+    position: sticky; top: 120px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px; overflow: hidden;
+  }
+  .visual-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 24px;
+  }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot.red { background: #ff5f56; }
+  .dot.yellow { background: #ffbd2e; }
+  .dot.green { background: #27c93f; }
+  .dashboard-mock {
+    background: var(--surface2); border-radius: 10px; padding: 20px;
+  }
+  .mock-title {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .mock-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .mock-row:last-child { border-bottom: none; }
+  .mock-location { color: var(--text); font-weight: 500; }
+  .mock-score {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    padding: 3px 10px; border-radius: 4px;
+  }
+  .mock-score.high { background: rgba(39,201,63,0.1); color: #27c93f; }
+  .mock-score.mid { background: rgba(255,189,46,0.1); color: #ffbd2e; }
+  .mock-score.low { background: rgba(255,71,71,0.1); color: var(--red); }
+  .mock-anomaly {
+    margin-top: 16px; background: rgba(255,71,71,0.06);
+    border: 1px solid rgba(255,71,71,0.15); border-radius: 8px; padding: 14px;
+  }
+  .mock-anomaly-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--red); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;
+  }
+  .mock-anomaly-text { font-size: 13px; color: var(--muted2); }
+  .mock-anomaly strong { color: var(--text); }
+
+  /* ── MARKET ── */
+  #market {}
+  .market-layout {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center; margin-top: 64px;
+  }
+  .market-numbers { display: flex; flex-direction: column; gap: 32px; }
+  .market-num-item {
+    display: flex; gap: 24px; align-items: flex-start;
+    padding-bottom: 32px; border-bottom: 1px solid var(--border);
+  }
+  .market-num-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .market-big {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px; letter-spacing: -2px; line-height: 1;
+    color: var(--accent);
+  }
+  .market-big sub { font-size: 24px; vertical-align: 0; }
+  .market-num-label { font-size: 15px; color: var(--text); font-weight: 500; margin-bottom: 4px; }
+  .market-num-sub { font-size: 13px; color: var(--muted2); line-height: 1.6; }
+
+  .market-right {}
+  .market-right h3 {
+    font-size: 26px; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 20px;
+  }
+  .market-right p { font-size: 15px; color: var(--muted2); line-height: 1.8; margin-bottom: 16px; }
+  .market-brands {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px;
+  }
+  .brand-chip {
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 8px 16px; border-radius: 6px;
+    font-size: 13px; font-weight: 500; color: var(--muted2);
+  }
+
+  /* ── FOUNDER ── */
+  #founder { background: var(--surface); }
+  .founder-layout {
+    display: grid; grid-template-columns: 1fr 1.4fr;
+    gap: 80px; align-items: start; margin-top: 64px;
+  }
+  .founder-card {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 40px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .founder-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 120px;
+    background: linear-gradient(0deg, rgba(232,255,71,0.03) 0%, transparent 100%);
+  }
+  .founder-avatar {
+    width: 100px; height: 100px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif; font-size: 36px; color: #0a0c0f;
+    font-weight: 700;
+  }
+  .founder-name {
+    font-family: 'DM Serif Display', serif; font-size: 26px;
+    letter-spacing: -0.5px; margin-bottom: 6px;
+  }
+  .founder-role {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .founder-badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+  .founder-badge {
+    background: var(--surface2); border: 1px solid var(--border);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 12px; color: var(--muted2);
+  }
+  .founder-right {}
+  .founder-right blockquote {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px; line-height: 1.45; letter-spacing: -0.5px;
+    color: var(--text); margin-bottom: 32px;
+    padding-left: 24px; border-left: 3px solid var(--accent);
+  }
+  .founder-bio { font-size: 15px; color: var(--muted2); line-height: 1.8; }
+  .founder-bio p { margin-bottom: 16px; }
+  .founder-bio strong { color: var(--text); }
+  .founder-links { display: flex; gap: 16px; margin-top: 32px; }
+  .founder-link {
+    display: flex; align-items: center; gap: 8px;
+    color: var(--muted2); font-size: 14px; text-decoration: none;
+    border: 1px solid var(--border); padding: 10px 20px; border-radius: 8px;
+    transition: all 0.2s;
+  }
+  .founder-link:hover { color: var(--accent); border-color: rgba(232,255,71,0.3); }
+
+  /* ── CTA ── */
+  #cta {
+    text-align: center;
+    background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
+  }
+  .cta-inner { max-width: 680px; margin: 0 auto; }
+  #cta h2 { margin-bottom: 20px; }
+  #cta .section-sub { margin: 0 auto 48px; }
+  .cta-form {
+    display: flex; gap: 12px; max-width: 440px; margin: 0 auto;
+  }
+  .cta-input {
+    flex: 1; background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); padding: 14px 20px; border-radius: 8px;
+    font-size: 15px; font-family: 'Outfit', sans-serif;
+    outline: none; transition: border-color 0.2s;
+  }
+  .cta-input::placeholder { color: var(--muted); }
+  .cta-input:focus { border-color: rgba(232,255,71,0.4); }
+  .cta-note { font-size: 13px; color: var(--muted); margin-top: 16px; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 40px 48px;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-logo {
+    font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text);
+  }
+  .footer-logo span { color: var(--accent); }
+  .footer-copy { font-size: 13px; color: var(--muted); }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--text); }
+
+  /* ── REVEAL ANIMATIONS ── */
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 72px 24px; }
+    #hero { padding: 100px 24px 64px; }
+    .hero-stats { gap: 32px; flex-wrap: wrap; }
+    .problem-grid, .how-grid, .market-layout, .founder-layout, .features-grid {
+      grid-template-columns: 1fr;
+    }
+    .how-visual { position: static; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">kelvyn<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="#product">Product</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#market">Market</a></li>
+    <li><a href="#founder">Founder</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta">Request Access</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orb"></div>
+  <div class="hero-orb2"></div>
+  <div class="hero-eyebrow">Franchise Intelligence Platform</div>
+  <h1>The <em>intelligence layer</em> every franchise network is missing</h1>
+  <p class="hero-sub">Automated compliance auditing, unit economics benchmarking, and anomaly detection — across hundreds of franchise locations, in real time.</p>
+  <div class="hero-actions">
+    <a href="#cta" class="btn-primary">Request Early Access</a>
+    <a href="#product" class="btn-ghost">See the platform <span class="arrow">→</span></a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">4<span>,000</span>+</div>
+      <div class="stat-label">Franchise brands in the US</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num"><span>$</span>1.7<span>B</span></div>
+      <div class="stat-label">Franchise software market (2024)</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">780<span>K</span>+</div>
+      <div class="stat-label">Franchise locations in the US</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-num">~<span>0</span></div>
+      <div class="stat-label">AI-native intelligence platforms</div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-item">Compliance Auditing <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Royalty Anomaly Detection <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Unit Economics Benchmarking <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Training Completion Tracking <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Network-Wide Intelligence <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Prescriptive Analytics <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Operator Performance Scoring <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Brand Standard Enforcement <span class="ticker-dot">◆</span></div>
+    <!-- Duplicate for seamless loop -->
+    <div class="ticker-item">Compliance Auditing <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Royalty Anomaly Detection <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Unit Economics Benchmarking <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Training Completion Tracking <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Network-Wide Intelligence <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Prescriptive Analytics <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Operator Performance Scoring <span class="ticker-dot">◆</span></div>
+    <div class="ticker-item">Brand Standard Enforcement <span class="ticker-dot">◆</span></div>
+  </div>
+</div>
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="section-eyebrow">The Problem</div>
+  <div class="problem-grid">
+    <div class="problem-cards">
+      <div class="problem-card reveal">
+        <div class="problem-icon">🔍</div>
+        <div>
+          <h4>Blind compliance audits</h4>
+          <p>Franchisors still rely on infrequent manual store visits and franchisee self-reporting to assess brand standard adherence across hundreds of locations.</p>
+        </div>
+      </div>
+      <div class="problem-card reveal reveal-delay-1">
+        <div class="problem-icon">💸</div>
+        <div>
+          <h4>Royalty reporting in the dark</h4>
+          <p>Royalty calculations depend on self-reported revenue from operators. Discrepancies and underreporting go undetected for months — sometimes years.</p>
+        </div>
+      </div>
+      <div class="problem-card reveal reveal-delay-2">
+        <div class="problem-icon">📊</div>
+        <div>
+          <h4>No network benchmarking</h4>
+          <p>Individual franchise operators have no visibility into how their unit economics stack up against the network average. Franchisors have no systematic way to identify underperformers.</p>
+        </div>
+      </div>
+      <div class="problem-card reveal reveal-delay-3">
+        <div class="problem-icon">🎓</div>
+        <div>
+          <h4>Training completion is a spreadsheet</h4>
+          <p>Tracking whether a 500-location operator network has completed mandatory certifications is manual, fragmented, and chronically behind schedule.</p>
+        </div>
+      </div>
+    </div>
+    <div class="problem-right reveal reveal-delay-1">
+      <div class="problem-quote">
+        McDonald's has <em>40,000 locations</em>. Their compliance team has almost no automated intelligence layer.
+      </div>
+      <p class="problem-context">
+        <strong>Franchise brands operate at massive scale</strong> — yet the operational tooling hasn't caught up. FranConnect, the category leader, built its product for workflow management. The intelligence layer — the AI that tells you which location is about to fail an audit, which operator is sandbagging royalty revenue, which unit's EBITDA is 30% below network average — <strong>doesn't exist yet.</strong>
+      </p>
+      <br>
+      <p class="problem-context">
+        Kelvyn is that layer. Built natively on real-time data, designed for franchise HQ teams managing hundreds to thousands of operators.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCT -->
+<section id="product">
+  <div class="product-header reveal">
+    <div class="section-eyebrow">The Platform</div>
+    <h2>Four modules. One <em>unified</em> intelligence system.</h2>
+    <p class="section-sub">Kelvyn connects to your existing franchise data — POS, LMS, accounting, field ops — and surfaces the intelligence your team needs to act.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card reveal">
+      <div class="feature-num">01 / 04</div>
+      <div class="feature-icon-wrap">🛡️</div>
+      <h3>Compliance Audit Engine</h3>
+      <p>Automated scoring across all franchise locations using POS data, inspection reports, and customer feedback signals. Know which locations are non-compliant before they become a liability — without sending a field rep.</p>
+      <div class="feature-tags">
+        <span class="tag">Real-time scoring</span>
+        <span class="tag">SOP mapping</span>
+        <span class="tag">Auto-alerts</span>
+      </div>
+    </div>
+    <div class="feature-card reveal reveal-delay-1">
+      <div class="feature-num">02 / 04</div>
+      <div class="feature-icon-wrap">📡</div>
+      <h3>Royalty Anomaly Detection</h3>
+      <p>Machine learning models trained on network-wide revenue patterns to flag locations with suspicious reporting gaps. Recover underpaid royalties. Protect brand revenue integrity across every operator in your system.</p>
+      <div class="feature-tags">
+        <span class="tag">ML anomaly detection</span>
+        <span class="tag">Revenue signals</span>
+        <span class="tag">Audit trails</span>
+      </div>
+    </div>
+    <div class="feature-card reveal reveal-delay-2">
+      <div class="feature-num">03 / 04</div>
+      <div class="feature-icon-wrap">📈</div>
+      <h3>Unit Economics Benchmarking</h3>
+      <p>Each franchise unit benchmarked against cohort averages — by region, age, format, and operator profile. Identify underperformers early. Give top-quartile operators the context to understand what they're doing right.</p>
+      <div class="feature-tags">
+        <span class="tag">Cohort analysis</span>
+        <span class="tag">P&L benchmarking</span>
+        <span class="tag">Operator scoring</span>
+      </div>
+    </div>
+    <div class="feature-card reveal reveal-delay-3">
+      <div class="feature-num">04 / 04</div>
+      <div class="feature-icon-wrap">🎯</div>
+      <h3>Training & Certification Tracker</h3>
+      <p>Live dashboard of training completion across every operator, manager, and location. Automated escalation for overdue certifications. Correlate training compliance with operational performance to prove the ROI of your L&D investment.</p>
+      <div class="feature-tags">
+        <span class="tag">LMS integration</span>
+        <span class="tag">Auto-escalation</span>
+        <span class="tag">Performance correlation</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="section-eyebrow">How It Works</div>
+  <h2>Intelligence that <em>acts</em>, not just reports.</h2>
+  <div class="how-grid">
+    <div class="steps">
+      <div class="step active reveal" onclick="setActive(this)">
+        <div class="step-num">01</div>
+        <div class="step-content">
+          <div class="step-title">Connect your data sources</div>
+          <div class="step-desc">Kelvyn integrates with your POS system, existing franchise management platform, LMS, and accounting tools via API. No rip-and-replace. Works alongside FranConnect, Naranga, and custom stacks.</div>
+        </div>
+      </div>
+      <div class="step reveal reveal-delay-1" onclick="setActive(this)">
+        <div class="step-num">02</div>
+        <div class="step-content">
+          <div class="step-title">Kelvyn builds your network baseline</div>
+          <div class="step-desc">Our models ingest 12–24 months of historical data to establish unit-level and network-level baselines across all key metrics — revenue, compliance, training, and operator behavior.</div>
+        </div>
+      </div>
+      <div class="step reveal reveal-delay-2" onclick="setActive(this)">
+        <div class="step-num">03</div>
+        <div class="step-content">
+          <div class="step-title">Anomalies surface automatically</div>
+          <div class="step-desc">Deviations from baseline trigger intelligent alerts — prioritized by impact and urgency. Your team sees only what matters, ranked by the dollar value of acting on it.</div>
+        </div>
+      </div>
+      <div class="step reveal reveal-delay-3" onclick="setActive(this)">
+        <div class="step-num">04</div>
+        <div class="step-content">
+          <div class="step-title">Prescriptive actions, not just data</div>
+          <div class="step-desc">Kelvyn doesn't just flag problems — it recommends actions. Which operator needs a field visit. Which location needs an audit. Which training module correlates with the performance gap.</div>
+        </div>
+      </div>
+    </div>
+    <div class="how-visual reveal reveal-delay-2">
+      <div class="visual-header">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+        <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-left:8px;letter-spacing:1px;">KELVYN — NETWORK OVERVIEW</span>
+      </div>
+      <div class="dashboard-mock">
+        <div class="mock-title">Compliance Score · 847 Locations</div>
+        <div class="mock-row">
+          <span class="mock-location">Chicago North #0441</span>
+          <span class="mock-score high">98.2</span>
+        </div>
+        <div class="mock-row">
+          <span class="mock-location">Dallas Central #0209</span>
+          <span class="mock-score high">94.7</span>
+        </div>
+        <div class="mock-row">
+          <span class="mock-location">Miami Beach #0552</span>
+          <span class="mock-score mid">71.4</span>
+        </div>
+        <div class="mock-row">
+          <span class="mock-location">Austin South #0318</span>
+          <span class="mock-score low">44.1 ⚠</span>
+        </div>
+        <div class="mock-row">
+          <span class="mock-location">Phoenix Mesa #0677</span>
+          <span class="mock-score mid">68.9</span>
+        </div>
+        <div class="mock-anomaly">
+          <div class="mock-anomaly-label">⚡ Royalty Anomaly Detected</div>
+          <div class="mock-anomaly-text"><strong>Austin South #0318</strong> reporting revenue 34% below 6-month baseline. Estimated underpayment: <strong>$12,400/mo.</strong> Recommended action: Schedule audit within 7 days.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKET -->
+<section id="market">
+  <div class="section-eyebrow">Market Opportunity</div>
+  <div class="market-layout">
+    <div class="market-numbers">
+      <div class="market-num-item reveal">
+        <div>
+          <div class="market-big">$4.5<sub>B</sub></div>
+        </div>
+        <div>
+          <div class="market-num-label">Franchise management software market by 2034</div>
+          <div class="market-num-sub">Growing at 10.2% CAGR. Intelligence and AI layers are the fastest-growing segment within the category.</div>
+        </div>
+      </div>
+      <div class="market-num-item reveal reveal-delay-1">
+        <div>
+          <div class="market-big">825K</div>
+        </div>
+        <div>
+          <div class="market-num-label">Franchise establishments in the US</div>
+          <div class="market-num-sub">Each one a potential data source. Each one an upsell opportunity for franchisors already on Kelvyn.</div>
+        </div>
+      </div>
+      <div class="market-num-item reveal reveal-delay-2">
+        <div>
+          <div class="market-big">$0</div>
+        </div>
+        <div>
+          <div class="market-num-label">Purpose-built AI intelligence platforms in this space</div>
+          <div class="market-num-sub">Existing tools (FranConnect, Naranga, Hubler) are workflow management systems. The intelligence layer is wide open.</div>
+        </div>
+      </div>
+    </div>
+    <div class="market-right reveal reveal-delay-1">
+      <h3>The category is workflow. The gap is intelligence.</h3>
+      <p>FranConnect — the market leader — built a strong operational backbone but has only recently bolted on AI as an afterthought. Its "Frannie AI" automation suite is reporting automation. Kelvyn is anomaly intelligence, benchmarking, and prescriptive actions built natively from day one.</p>
+      <p>Our wedge is the customers who already pay $80K–$250K/year for franchise management software and are actively looking for what to layer on top. Kelvyn is that layer — deeply integrated, not a replacement.</p>
+      <p>Initial focus: QSR, fitness, and home services franchises — the three verticals with the highest operator density, most standardized operations, and highest royalty exposure per network.</p>
+      <div class="market-brands">
+        <div class="brand-chip">QSR / Fast Food</div>
+        <div class="brand-chip">Fitness & Wellness</div>
+        <div class="brand-chip">Home Services</div>
+        <div class="brand-chip">Retail Franchises</div>
+        <div class="brand-chip">Hospitality</div>
+        <div class="brand-chip">Education</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOUNDER -->
+<section id="founder">
+  <div class="section-eyebrow">The Founder</div>
+  <h2>Built by someone who <em>knows the problem.</em></h2>
+  <div class="founder-layout">
+    <div>
+      <div class="founder-card reveal">
+        <div class="founder-avatar">SV</div>
+        <div class="founder-name">Sai Vishwak</div>
+        <div class="founder-role">Founder & CEO, Kelvyn</div>
+        <div class="founder-badges">
+          <span class="founder-badge">Franchise Operations</span>
+          <span class="founder-badge">Enterprise SaaS</span>
+          <span class="founder-badge">ML / AI</span>
+          <span class="founder-badge">B2B Operator Networks</span>
+        </div>
+      </div>
+    </div>
+    <div class="founder-right reveal reveal-delay-1">
+      <blockquote>
+        "Franchise brands have spent decades building distribution networks at scale — and almost nothing on understanding them."
+      </blockquote>
+      <div class="founder-bio">
+        <p>Sai Vishwak founded Kelvyn after observing firsthand how franchise operators and brand HQs communicate — or fail to. The information asymmetry between a franchisor's corporate team and its network of hundreds of operators is staggering. <strong>Compliance is tracked on spreadsheets. Royalty anomalies go undetected. Training completion is a delayed report.</strong></p>
+        <p>Kelvyn is Sai's answer to a question that's been asked quietly by every franchise development director, VP of Operations, and Brand Standards team lead: <strong>what if we actually had a real-time intelligence system for the network?</strong></p>
+        <p>Sai brings together a background in data systems, operator economics, and enterprise go-to-market. Kelvyn is designed to sit alongside — not replace — the existing franchise management stack, delivering the intelligence layer that no one else has built natively.</p>
+      </div>
+      <div class="founder-links">
+        <a href="mailto:sai@kelvyn.ai" class="founder-link">
+          <span>✉</span> sai@kelvyn.ai
+        </a>
+        <a href="#cta" class="founder-link">
+          <span>↗</span> Talk to Sai
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-inner">
+    <div class="section-eyebrow" style="text-align:center;margin-bottom:16px;">Early Access</div>
+    <h2>Join the waitlist. Be <em>first</em> in your network.</h2>
+    <p class="section-sub">We're onboarding a small cohort of franchise brands in 2025. If you're managing 50+ locations and want to be the first in your vertical to have real-time franchise intelligence, apply now.</p>
+    <div class="cta-form">
+      <input type="email" class="cta-input" placeholder="your@company.com">
+      <a href="#" class="btn-primary" style="white-space:nowrap;">Get Access</a>
+    </div>
+    <p class="cta-note">No commitment. We'll reach out within 48 hours.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">kelvyn<span>.</span></div>
+  <div class="footer-copy">© 2025 Kelvyn. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="#product">Product</a>
+    <a href="#founder">About</a>
+    <a href="mailto:sai@kelvyn.ai">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Navbar scroll
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Step toggle
+  function setActive(el) {
+    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
